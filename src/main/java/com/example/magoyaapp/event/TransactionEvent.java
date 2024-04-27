@@ -5,7 +5,6 @@ import com.example.magoyaapp.model.Event;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 

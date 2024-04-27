@@ -1,5 +1,6 @@
 package com.example.magoyaapp.service;
 
+import ch.qos.logback.classic.Logger;
 import com.example.magoyaapp.enums.TransactionType;
 import com.example.magoyaapp.event.TransactionEvent;
 import com.example.magoyaapp.model.Account;
@@ -29,8 +30,12 @@ public class TransactionService {
     public Transaction createTransaction(Transaction transaction) {
         transaction.setTimestamp(LocalDateTime.now());
         Transaction createdTransaction = transactionRepository.save(transaction);
+        updateAccountBalance(createdTransaction);
+        createTransactionEvent(createdTransaction);
+        return createdTransaction;
+    }
 
-        // Actualizar el saldo de la cuenta asociada
+    private void updateAccountBalance(Transaction transaction) {
         Account account = accountRepository.findById(transaction.getAccountId()).orElse(null);
         if (account != null) {
             if (transaction.getType() == TransactionType.DEPOSIT) {
@@ -40,15 +45,14 @@ public class TransactionService {
             }
             accountRepository.save(account);
         }
-
-        // Crear evento TransactionEvent
-        TransactionEvent event = new TransactionEvent(transaction.getAccountId(), transaction.getTimestamp(), transaction.getAmount(), transaction.getType());
-        transactionEventRepository.save(event);
-
-        return createdTransaction;
     }
 
     public Transaction getTransactionById(String id) {
         return transactionRepository.findById(id).orElse(null);
+    }
+
+    private void createTransactionEvent(Transaction transaction) {
+        TransactionEvent event = new TransactionEvent(transaction.getAccountId(), transaction.getTimestamp(), transaction.getAmount(), transaction.getType());
+        transactionEventRepository.save(event);
     }
 }

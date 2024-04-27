@@ -21,7 +21,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
         Transaction createdTransaction = transactionService.createTransaction(transaction);
-        return new ResponseEntity<>(createdTransaction, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
     }
 
     @GetMapping("/{id}")
