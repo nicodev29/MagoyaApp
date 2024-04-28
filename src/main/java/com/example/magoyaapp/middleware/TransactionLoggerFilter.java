@@ -53,11 +53,11 @@ public class TransactionLoggerFilter extends OncePerRequestFilter {
                 transaction.setTimestamp(LocalDateTime.now());
 
                 if (transaction.getType() == TransactionType.DEPOSIT && transaction.getAmount().compareTo(DEPOSIT_THRESHOLD) > 0) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     String formattedTimestamp = transaction.getTimestamp().format(formatter);
                     logger.info("Depósito superior a $10000 - Fecha y hora: {}", formattedTimestamp);
                     logger.info("Account ID: {}", transaction.getAccountId());
-                    logger.info("Amount: {}", transaction.getAmount());
+                    logger.info("Monto de la transaccion: {}", transaction.getAmount());
                 }
             } catch (JsonProcessingException e) {
                 logger.error("Error processing JSON", e);
