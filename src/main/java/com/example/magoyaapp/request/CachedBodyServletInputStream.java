@@ -10,10 +10,18 @@ import java.io.InputStream;
 public class CachedBodyServletInputStream extends ServletInputStream {
     private final InputStream cachedBodyInputStream;
 
+    /*
+     * Este constructor recibe un arreglo de bytes y crea un ByteArrayInputStream a partir de él.
+     * Este InputStream se utiliza para leer el cuerpo de la solicitud en caché.
+     */
     public CachedBodyServletInputStream(byte[] cachedBody) {
         this.cachedBodyInputStream = new ByteArrayInputStream(cachedBody);
     }
 
+    /*
+     * Este método verifica si se ha leído todo el cuerpo de la solicitud en caché.
+     * Devuelve true si no hay más bytes por leer (available() == 0), false en caso contrario.
+     */
     @Override
     public boolean isFinished() {
         try {
@@ -24,6 +32,9 @@ public class CachedBodyServletInputStream extends ServletInputStream {
         return false;
     }
 
+    /*
+     * Este método siempre devuelve true, ya que el cuerpo de la solicitud está en caché y siempre está listo para ser leído.
+     */
     @Override
     public boolean isReady() {
         return true;
@@ -34,6 +45,9 @@ public class CachedBodyServletInputStream extends ServletInputStream {
         throw new UnsupportedOperationException();
     }
 
+    /*
+     * Este método lee un byte del cuerpo de la solicitud en caché y lo devuelve como un int.
+     */
     @Override
     public int read() throws IOException {
         return cachedBodyInputStream.read();

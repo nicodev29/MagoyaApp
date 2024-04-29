@@ -21,12 +21,14 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    // ENDPOINT PARA CREAR UNA CUENTA
     @PostMapping
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
         Account createdAccount = accountService.createAccount(account);
         return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
     }
 
+    // ENDPOINT PARA OBTENER UNA CUENTA POR ID
     @GetMapping("/{id}/balance")
     public ResponseEntity<BigDecimal> getAccountBalance(@PathVariable String id) {
         Account account = accountService.getAccountById(id);
@@ -37,6 +39,7 @@ public class AccountController {
         }
     }
 
+    // ENDPOINT PARA OBTENER UNA CUENTA POR NÚMERO DE CUENTA
     @GetMapping("/{accountNumber}")
     public ResponseEntity<BigDecimal> getAccountByAccountNumber(@PathVariable String accountNumber) {
         Account account = accountService.getAccountByAccountNumber(accountNumber);

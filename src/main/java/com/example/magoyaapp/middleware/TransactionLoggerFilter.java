@@ -43,15 +43,29 @@ public class TransactionLoggerFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        /*
+         * Esta condición verifica si la solicitud es una solicitud POST a la ruta "/api/transactions".
+         */
         if ("/api/transactions".equals(request.getRequestURI()) && "POST".equals(request.getMethod())) {
+            /*
+             * CachedBodyHttpServletRequest es una subclase de HttpServletRequestWrapper que almacena en caché
+             * el cuerpo de la solicitud para poder leerlo varias veces.
+             */
             CachedBodyHttpServletRequest cachedRequest = new CachedBodyHttpServletRequest(request);
             String requestBody = IOUtils.toString(cachedRequest.getInputStream(), StandardCharsets.UTF_8);
 
             try {
+                /*
+                 * Se deserializa el cuerpo de la solicitud JSON a un objeto Transaction.
+                 */
                 Transaction transaction = objectMapper.readValue(requestBody, Transaction.class);
 
                 transaction.setTimestamp(LocalDateTime.now());
 
+                /*
+                 * Si el tipo de transacción es un depósito y el monto es superior al umbral de $10000,
+                 * se registran detalles de la transacción en el registro.
+                 */
                 if (transaction.getType() == TransactionType.DEPOSIT && transaction.getAmount().compareTo(DEPOSIT_THRESHOLD) > 0) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     String formattedTimestamp = transaction.getTimestamp().format(formatter);
@@ -60,13 +74,20 @@ public class TransactionLoggerFilter extends OncePerRequestFilter {
                     logger.info("Monto de la transaccion: {}", transaction.getAmount());
                 }
             } catch (JsonProcessingException e) {
+
                 logger.error("Error processing JSON", e);
             }
 
+            /*
+             * Se pasa la solicitud con el cuerpo en caché al siguiente filtro en la cadena.
+             */
             filterChain.doFilter(cachedRequest, response);
         } else {
+            /*
+             * Si la solicitud no es una solicitud POST a "/api/transactions",
+             * simplemente se pasa al siguiente filtro en la cadena.
+             */
             filterChain.doFilter(request, response);
         }
     }
-
 }

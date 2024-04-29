@@ -20,6 +20,7 @@ public class Transaction {
     @Id
     private String id;
     private String accountId;
+    private String accountNumber;
     private BigDecimal amount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;

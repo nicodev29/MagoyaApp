@@ -21,12 +21,14 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
+    // ENDPOINT PARA CREAR UNA TRANSACCIÓN
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@RequestBody Transaction transaction) {
         Transaction createdTransaction = transactionService.createTransaction(transaction);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
     }
 
+    // ENDPOINT PARA OBTENER UNA TRANSACCIÓN POR ID
     @GetMapping("/{id}")
     public ResponseEntity<Transaction> getTransactionById(@PathVariable String id) {
         Transaction transaction = transactionService.getTransactionById(id);
@@ -37,6 +39,7 @@ public class TransactionController {
         }
     }
 
+    // ENDPOINT PARA CREAR UNA TRANSACCIÓN POR NÚMERO DE CUENTA
     @PostMapping("/by-number")
     public ResponseEntity<Transaction> createTransactionByAccountNumber(@RequestBody Transaction transaction, @RequestParam String accountNumber) {
         try {
@@ -47,6 +50,7 @@ public class TransactionController {
         }
     }
 
+    // ENDPOINT PARA OBTENER TODAS LAS TRANSACCIONES
     @GetMapping("/all")
     public ResponseEntity<Iterable<Transaction>> getAllTransactions() {
         Iterable<Transaction> transactions = transactionService.getAllTransactions();
