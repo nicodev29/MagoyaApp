@@ -35,5 +35,18 @@ public class TransactionController {
         }
     }
 
+    @PostMapping("/by-number")
+    public ResponseEntity<Transaction> createTransactionByAccountNumber(@RequestBody Transaction transaction, @RequestParam String accountNumber) {
+        try {
+            Transaction createdTransaction = transactionService.createTransactionByAccountNumber(transaction, accountNumber);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+
+
+
 
 }

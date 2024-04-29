@@ -1,6 +1,5 @@
 package com.example.magoyaapp.service;
 
-import ch.qos.logback.classic.Logger;
 import com.example.magoyaapp.enums.TransactionType;
 import com.example.magoyaapp.event.TransactionEvent;
 import com.example.magoyaapp.model.Account;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 
 @Service
@@ -51,8 +51,20 @@ public class TransactionService {
         return transactionRepository.findById(id).orElse(null);
     }
 
-    private void createTransactionEvent(Transaction transaction) {
+    public void createTransactionEvent(Transaction transaction) {
         TransactionEvent event = new TransactionEvent(transaction.getAccountId(), transaction.getTimestamp(), transaction.getAmount(), transaction.getType());
         transactionEventRepository.save(event);
     }
+
+    public Transaction createTransactionByAccountNumber(Transaction transaction, String accountNumber) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada con el número: " + accountNumber));
+        transaction.setAccountId(account.getId());
+
+        return createTransaction(transaction);
+    }
+
+
+
+
 }
