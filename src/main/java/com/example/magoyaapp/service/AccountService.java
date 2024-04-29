@@ -34,5 +34,8 @@ public class AccountService {
         return accountRepository.findById(id).orElse(null);
     }
 
+    public Account getAccountByAccountNumber(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber).orElse(null);
 
+    }
 }

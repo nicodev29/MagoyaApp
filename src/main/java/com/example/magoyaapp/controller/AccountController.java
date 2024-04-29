@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/accounts")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AccountController {
 
     private final AccountService accountService;
@@ -35,5 +36,16 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/{accountNumber}")
+    public ResponseEntity<BigDecimal> getAccountByAccountNumber(@PathVariable String accountNumber) {
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if (account != null) {
+            return new ResponseEntity<>(account.getBalance(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }
