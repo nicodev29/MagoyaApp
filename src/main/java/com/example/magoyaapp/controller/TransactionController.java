@@ -1,6 +1,8 @@
 package com.example.magoyaapp.controller;
 
+import com.example.magoyaapp.model.Event;
 import com.example.magoyaapp.model.Transaction;
+import com.example.magoyaapp.repository.TransactionRepository;
 import com.example.magoyaapp.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @Autowired
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService, TransactionRepository transactionRepository) {
         this.transactionService = transactionService;
     }
 
@@ -45,8 +47,11 @@ public class TransactionController {
         }
     }
 
-
-
+    @GetMapping("/all")
+    public ResponseEntity<Iterable<Transaction>> getAllTransactions() {
+        Iterable<Transaction> transactions = transactionService.getAllTransactions();
+        return ResponseEntity.status(HttpStatus.OK).body(transactions);
+    }
 
 
 }
